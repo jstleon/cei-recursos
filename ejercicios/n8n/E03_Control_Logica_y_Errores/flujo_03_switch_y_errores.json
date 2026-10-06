@@ -1,0 +1,271 @@
+{
+  "name": "E03 · Control de lógica, Switch y validación de errores",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e03-manual",
+      "name": "Disparador Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      id_pedido: 1041,\n      cliente: \"Elena Morales\",\n      email: \"elena@example.com\",\n      estado: \"entregado\",\n      total: 97.5\n    }\n  },\n  {\n    json: {\n      id_pedido: 1042,\n      cliente: \"Carlos Benítez\",\n      email: \"carlos@example.com\",\n      estado: \"en_reparto\",\n      total: 54.0\n    }\n  },\n  {\n    json: {\n      id_pedido: 1044,\n      cliente: \"Javier Sanz\",\n      email: \"javier@example.com\",\n      estado: \"preparacion\",\n      total: 80.0\n    }\n  },\n  {\n    json: {\n      id_pedido: 9999,\n      cliente: \"Dato Corrupto\",\n      email: \"invalido-sin-arroba\",\n      estado: \"desconocido\",\n      total: -10\n    }\n  }\n];"
+      },
+      "id": "e03-cargar-dataset",
+      "name": "Generar Datos de Prueba",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst validos = [];\nconst invalidos = [];\n\nfor (const item of items) {\n  const d = item.json;\n  const emailValido = typeof d.email === 'string' && d.email.includes('@');\n  const totalValido = typeof d.total === 'number' && d.total > 0;\n  \n  if (emailValido && totalValido) {\n    validos.push({ json: { ...d, validacion: 'OK' } });\n  } else {\n    invalidos.push({ json: { ...d, validacion: 'ERROR_DATOS', motivo: !emailValido ? 'Email inválido' : 'Total no positivo' } });\n  }\n}\n\nreturn [validos, invalidos];"
+      },
+      "id": "e03-validar",
+      "name": "Validar Datos Obligatorios",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        340
+      ],
+      "outputNames": [
+        "Válidos",
+        "Inválidos"
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.estado }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "entregado",
+              "outputKey": "Entregado"
+            },
+            {
+              "value2": "en_reparto",
+              "outputKey": "En Reparto"
+            },
+            {
+              "value2": "preparacion",
+              "outputKey": "En Preparación"
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "e03-switch",
+      "name": "Switch por Estado",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        820,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sw-1",
+              "name": "accion_ejecutada",
+              "value": "=Archivar pedido #{{ $json.id_pedido }} como finalizado",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e03-entregado",
+      "name": "Acción: Archivar",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sw-2",
+              "name": "accion_ejecutada",
+              "value": "=Enviar SMS de reparto a {{ $json.cliente }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e03-reparto",
+      "name": "Acción: SMS Reparto",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sw-3",
+              "name": "accion_ejecutada",
+              "value": "=Notificar a taller: preparar pedido #{{ $json.id_pedido }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e03-preparacion",
+      "name": "Acción: Cola de Taller",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sw-4",
+              "name": "alerta",
+              "value": "=Pedido #{{ $json.id_pedido }} requiere revisión humana manual",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e03-otros",
+      "name": "Acción: Revisión Manual",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "err-1",
+              "name": "registro_incidencia",
+              "value": "=RECHAZADO: {{ $json.motivo }} (ID: {{ $json.id_pedido }})",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e03-error-handler",
+      "name": "Bandeja de Errores",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        820,
+        520
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Disparador Manual": {
+      "main": [
+        [
+          {
+            "node": "Generar Datos de Prueba",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Datos de Prueba": {
+      "main": [
+        [
+          {
+            "node": "Validar Datos Obligatorios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Datos Obligatorios": {
+      "main": [
+        [
+          {
+            "node": "Switch por Estado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bandeja de Errores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch por Estado": {
+      "main": [
+        [
+          {
+            "node": "Acción: Archivar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Acción: SMS Reparto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Acción: Cola de Taller",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Acción: Revisión Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

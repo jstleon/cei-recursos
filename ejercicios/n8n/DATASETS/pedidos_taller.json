@@ -1,0 +1,95 @@
+[
+  {
+    "id_pedido": 1041,
+    "fecha": "2026-10-01",
+    "cliente": {
+      "nombre": "Elena Morales",
+      "email": "elena.morales@example.com",
+      "telefono": "+34 600 111 222",
+      "ciudad": "Madrid"
+    },
+    "items": [
+      { "producto": "Taza artesanal esmaltada verde", "cantidad": 2, "precio_unitario": 18.50 },
+      { "producto": "Plato de postre cerámica terracota", "cantidad": 4, "precio_unitario": 14.00 }
+    ],
+    "subtotal": 93.00,
+    "envio": 4.50,
+    "total": 97.50,
+    "estado": "entregado",
+    "metodo_pago": "tarjeta"
+  },
+  {
+    "id_pedido": 1042,
+    "fecha": "2026-10-02",
+    "cliente": {
+      "nombre": "Carlos Benítez",
+      "email": "carlos.b@example.com",
+      "telefono": "+34 611 222 333",
+      "ciudad": "Valencia"
+    },
+    "items": [
+      { "producto": "Jarrón estriado terracota", "cantidad": 1, "precio_unitario": 48.00 }
+    ],
+    "subtotal": 48.00,
+    "envio": 6.00,
+    "total": 54.00,
+    "estado": "en_reparto",
+    "metodo_pago": "bizum"
+  },
+  {
+    "id_pedido": 1043,
+    "fecha": "2026-10-02",
+    "cliente": {
+      "nombre": "Laura Méndez",
+      "email": "laura.mendez@example.com",
+      "telefono": "+34 622 333 444",
+      "ciudad": "Barcelona"
+    },
+    "items": [
+      { "producto": "Pack 6 tazas café con leche", "cantidad": 1, "precio_unitario": 85.00 },
+      { "producto": "Azucarero a juego", "cantidad": 1, "precio_unitario": 22.00 }
+    ],
+    "subtotal": 107.00,
+    "envio": 0.00,
+    "total": 107.00,
+    "estado": "enviado",
+    "metodo_pago": "tarjeta"
+  },
+  {
+    "id_pedido": 1044,
+    "fecha": "2026-10-03",
+    "cliente": {
+      "nombre": "Javier Sanz",
+      "email": "javier.sanz@example.com",
+      "telefono": "+34 633 444 555",
+      "ciudad": "Sevilla"
+    },
+    "items": [
+      { "producto": "Maceta colgante esmaltada blanco", "cantidad": 3, "precio_unitario": 25.00 }
+    ],
+    "subtotal": 75.00,
+    "envio": 5.00,
+    "total": 80.00,
+    "estado": "preparacion",
+    "metodo_pago": "transferencia"
+  },
+  {
+    "id_pedido": 1045,
+    "fecha": "2026-10-04",
+    "cliente": {
+      "nombre": "Marina Vidal",
+      "email": "marina.vidal@example.com",
+      "telefono": "+34 644 555 666",
+      "ciudad": "Bilbao"
+    },
+    "items": [
+      { "producto": "Cuenco ramen artesanal", "cantidad": 2, "precio_unitario": 28.00 },
+      { "producto": "Cucharas soporte cerámica", "cantidad": 2, "precio_unitario": 6.50 }
+    ],
+    "subtotal": 69.00,
+    "envio": 4.50,
+    "total": 73.50,
+    "estado": "pendiente_pago",
+    "metodo_pago": "transferencia"
+  }
+]

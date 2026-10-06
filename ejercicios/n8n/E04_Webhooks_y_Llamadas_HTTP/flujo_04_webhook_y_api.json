@@ -1,0 +1,146 @@
+{
+  "name": "E04 · Webhook de entrada y llamada HTTP a API REST",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "reserva-taller",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e04-webhook",
+      "name": "Webhook Reserva",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "webhookId": "reserva-taller-demo"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "wh-1",
+              "name": "id_reserva",
+              "value": "=RES-{{ Math.floor(Math.random() * 90000) + 10000 }}",
+              "type": "string"
+            },
+            {
+              "id": "wh-2",
+              "name": "alumno",
+              "value": "={{ $json.body.nombre || 'Alumno Anónimo' }}",
+              "type": "string"
+            },
+            {
+              "id": "wh-3",
+              "name": "taller_seleccionado",
+              "value": "={{ $json.body.curso || 'Iniciación al Torno' }}",
+              "type": "string"
+            },
+            {
+              "id": "wh-4",
+              "name": "fecha_registro",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e04-normalizar",
+      "name": "Normalizar Reserva",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"resultado\": \"ok\",\n  \"mensaje\": \"Reserva recibida correctamente\",\n  \"id_reserva\": \"{{ $json.id_reserva }}\",\n  \"alumno\": \"{{ $json.alumno }}\"\n}",
+        "options": {
+          "responseCode": 201
+        }
+      },
+      "id": "e04-responder",
+      "name": "Responder HTTP 201",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "reserva_id",
+              "value": "={{ $json.id_reserva }}"
+            },
+            {
+              "name": "alumno",
+              "value": "={{ $json.alumno }}"
+            },
+            {
+              "name": "curso",
+              "value": "={{ $json.taller_seleccionado }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e04-http-call",
+      "name": "Persistir en API Externa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        400
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Reserva": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Reserva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Reserva": {
+      "main": [
+        [
+          {
+            "node": "Responder HTTP 201",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Persistir en API Externa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

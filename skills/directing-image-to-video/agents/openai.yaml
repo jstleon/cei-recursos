@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dirección de imagen a vídeo"
+  short_description: "Prompts cinematográficos desde un fotograma"
+  default_prompt: "Usa $directing-image-to-video para convertir esta imagen inicial en un prompt cinematográfico de vídeo."

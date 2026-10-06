@@ -1,0 +1,4 @@
+interface:
+  display_name: "txt2img Prompting Avanzado"
+  short_description: "Redacta prompts visuales precisos y coherentes"
+  default_prompt: "Convierte mi intención visual en un prompt avanzado, coherente y listo para usar."

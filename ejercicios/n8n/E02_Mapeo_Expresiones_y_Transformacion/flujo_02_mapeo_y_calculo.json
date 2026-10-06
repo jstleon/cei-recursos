@@ -1,0 +1,158 @@
+{
+  "name": "E02 · Mapeo de datos y cálculo de pedidos",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e02-manual",
+      "name": "Disparador Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        180,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "p-1",
+              "name": "id_pedido",
+              "value": 1041,
+              "type": "number"
+            },
+            {
+              "id": "p-2",
+              "name": "cliente",
+              "value": "={ \"nombre\": \"Elena Morales\", \"ciudad\": \"Madrid\", \"email\": \"elena@example.com\" }",
+              "type": "object"
+            },
+            {
+              "id": "p-3",
+              "name": "subtotal",
+              "value": 93,
+              "type": "number"
+            },
+            {
+              "id": "p-4",
+              "name": "envio",
+              "value": 4.5,
+              "type": "number"
+            },
+            {
+              "id": "p-5",
+              "name": "items",
+              "value": "=[ { \"producto\": \"Taza verde\", \"cantidad\": 2, \"precio\": 18.5 }, { \"producto\": \"Plato terracota\", \"cantidad\": 4, \"precio\": 14 } ]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e02-datos-ejemplo",
+      "name": "Cargar Pedido Ejemplo",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c-1",
+              "name": "referencia_pedido",
+              "value": "=PEDIDO-#{{ $json.id_pedido }}",
+              "type": "string"
+            },
+            {
+              "id": "c-2",
+              "name": "destinatario",
+              "value": "={{ $json.cliente.nombre }} ({{ $json.cliente.ciudad }})",
+              "type": "string"
+            },
+            {
+              "id": "c-3",
+              "name": "total_calculado",
+              "value": "={{ Number($json.subtotal) + Number($json.envio) }}",
+              "type": "number"
+            },
+            {
+              "id": "c-4",
+              "name": "productos",
+              "value": "={{ $json.items }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e02-mapeo",
+      "name": "Mapear y Calcular Total",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "productos",
+        "options": {}
+      },
+      "id": "e02-split",
+      "name": "Desglosar Productos",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [
+        880,
+        280
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Disparador Manual": {
+      "main": [
+        [
+          {
+            "node": "Cargar Pedido Ejemplo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar Pedido Ejemplo": {
+      "main": [
+        [
+          {
+            "node": "Mapear y Calcular Total",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mapear y Calcular Total": {
+      "main": [
+        [
+          {
+            "node": "Desglosar Productos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

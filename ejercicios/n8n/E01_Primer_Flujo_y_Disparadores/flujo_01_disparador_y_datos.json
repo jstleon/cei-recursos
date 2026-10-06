@@ -1,0 +1,109 @@
+{
+  "name": "E01 · Primer flujo y disparadores del taller",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e01-node-manual-trigger",
+      "name": "Disparador Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "e01-node-schedule-trigger",
+      "name": "Horario Semanal Lunes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fld-1",
+              "name": "taller",
+              "value": "Taller & Cerámica CEI",
+              "type": "string"
+            },
+            {
+              "id": "fld-2",
+              "name": "aforo_maximo",
+              "value": 15,
+              "type": "number"
+            },
+            {
+              "id": "fld-3",
+              "name": "estado_horno",
+              "value": "encendido_baja_temperatura",
+              "type": "string"
+            },
+            {
+              "id": "fld-4",
+              "name": "temperatura_objetivo_c",
+              "value": 980,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e01-node-edit-fields",
+      "name": "Inicializar Datos Taller",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        320
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Disparador Manual": {
+      "main": [
+        [
+          {
+            "node": "Inicializar Datos Taller",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Horario Semanal Lunes": {
+      "main": [
+        [
+          {
+            "node": "Inicializar Datos Taller",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

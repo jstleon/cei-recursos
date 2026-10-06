@@ -1,0 +1,13 @@
+{
+  "name": "cei",
+  "owner": {
+    "name": "José León"
+  },
+  "plugins": [
+    {
+      "name": "cei-recursos",
+      "source": "./",
+      "description": "Doce skills CEI: prompts audiovisuales, storyboard, PRD, escritura, fuentes, n8n y agentes"
+    }
+  ]
+}

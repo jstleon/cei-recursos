@@ -1,0 +1,7 @@
+title: Recursos IA NO CODE · CEI
+description: Skills y ejercicios para creatividad, producto, investigación y automatización
+theme: jekyll-theme-minimal
+exclude:
+  - skills
+  - ejercicios
+  - install.sh

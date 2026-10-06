@@ -1,0 +1,190 @@
+{
+  "name": "E05 · Clasificación con LLM y Structured Output Parser",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e05-manual",
+      "name": "Disparador Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "msg-1",
+              "name": "id_ticket",
+              "value": "TCK-803",
+              "type": "string"
+            },
+            {
+              "id": "msg-2",
+              "name": "remitente",
+              "value": "elena.morales@example.com",
+              "type": "string"
+            },
+            {
+              "id": "msg-3",
+              "name": "asunto",
+              "value": "Taza rota en el envío (pedido 1041)",
+              "type": "string"
+            },
+            {
+              "id": "msg-4",
+              "name": "cuerpo",
+              "value": "Hola equipo. Acabo de abrir el paquete del pedido 1041 y una de las tazas verdes esmaltadas ha llegado con el asa partida. Os adjunto foto, ¿cómo podemos gestionar el reemplazo o reembolso?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e05-ticket-data",
+      "name": "Cargar Ticket Soporte",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        380,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza el siguiente ticket de soporte de una tienda de cerámica artesanal:\n\nASUNTO: {{ $json.asunto }}\nREMITENTE: {{ $json.remitente }}\nMENSAJE:\n{{ $json.cuerpo }}\n\nExtrae los campos requeridos en formato JSON estricto siguiendo las instrucciones del parser.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Eres un clasificador de soporte técnico estricto para un taller artesanal. Tu labor es extraer la intención del cliente, categorizar la incidencia y detectar si menciona un número de pedido.",
+              "type": "system"
+            }
+          ]
+        }
+      },
+      "id": "e05-llm-chain",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        620,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "e05-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        560,
+        500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "REEMPLAZAR_POR_TU_CREDENCIAL_OPENAI",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"categoria\": {\n      \"type\": \"string\",\n      \"enum\": [\"consulta_seguimiento\", \"queja_rotura\", \"cambio_direccion\", \"felicitacion\", \"spam\"]\n    },\n    \"urgencia\": {\n      \"type\": \"string\",\n      \"enum\": [\"baja\", \"media\", \"alta\"]\n    },\n    \"id_pedido\": {\n      \"type\": [\"integer\", \"null\"]\n    },\n    \"resumen\": {\n      \"type\": \"string\"\n    },\n    \"requiere_humano\": {\n      \"type\": \"boolean\"\n    }\n  },\n  \"required\": [\"categoria\", \"urgencia\", \"resumen\", \"requiere_humano\"]\n}"
+      },
+      "id": "e05-parser",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1,
+      "position": [
+        740,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst salida = item.output || item;\n\nconst categoriasValidas = ['consulta_seguimiento', 'queja_rotura', 'cambio_direccion', 'felicitacion', 'spam'];\nconst urgenciasValidas = ['baja', 'media', 'alta'];\n\nconst categoriaOk = categoriasValidas.includes(salida.categoria);\nconst urgenciaOk = urgenciasValidas.includes(salida.urgencia);\nconst idOk = salida.id_pedido === null || typeof salida.id_pedido === 'number';\n\nif (categoriaOk && urgenciaOk && idOk) {\n  return [{\n    json: {\n      ...salida,\n      validacion_guardrail: 'PASADO',\n      fecha_proceso: new Date().toISOString()\n    }\n  }];\n} else {\n  return [{\n    json: {\n      error: 'JSON_NO_VALIDO',\n      motivo: 'Salida del LLM incumple el contrato tipado',\n      raw: salida\n    }\n  }];\n}"
+      },
+      "id": "e05-validar-guardrail",
+      "name": "Validar Guardrail JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        920,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Disparador Manual": {
+      "main": [
+        [
+          {
+            "node": "Cargar Ticket Soporte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar Ticket Soporte": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Validar Guardrail JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

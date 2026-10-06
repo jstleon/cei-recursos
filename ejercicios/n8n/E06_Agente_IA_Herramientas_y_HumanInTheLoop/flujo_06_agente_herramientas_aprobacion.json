@@ -1,0 +1,184 @@
+{
+  "name": "E06 · Agente IA con Tool de Pedidos y Aprobación Humana",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e06-manual",
+      "name": "Disparador Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "q-1",
+              "name": "consulta_cliente",
+              "value": "Hola, ¿podríais decirme en qué estado se encuentra mi pedido 1043 y cuándo se envió?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e06-input-data",
+      "name": "Consulta de Entrada",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        380,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.consulta_cliente }}",
+        "options": {
+          "systemMessage": "Eres el asistente del Taller & Cerámica CEI. Dispones de la herramienta 'consultar_pedido' para comprobar el estado de cualquier pedido por su ID numérico. Si el cliente solo pide información, responde con amabilidad y precisión basándote en los datos de la herramienta. Si el cliente solicita una cancelación o reembolso, indícale que has registrado la solicitud para revisión manual del responsable del taller."
+        }
+      },
+      "id": "e06-agent",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        620,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "e06-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        560,
+        500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "REEMPLAZAR_POR_TU_CREDENCIAL_OPENAI",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "consultar_pedido",
+        "description": "Busca un pedido por su número entero de ID (ejemplo: 1041, 1042, 1043) y devuelve cliente, estado, productos y total.",
+        "jsCode": "const id = parseInt($fromAI('id_pedido', 'Número entero del pedido a consultar'));\n\nconst pedidos = {\n  1041: { cliente: 'Elena Morales', estado: 'entregado', total: 97.5, fecha: '2026-10-01' },\n  1042: { cliente: 'Carlos Benítez', estado: 'en_reparto', total: 54.0, fecha: '2026-10-02' },\n  1043: { cliente: 'Laura Méndez', estado: 'enviado', total: 107.0, fecha: '2026-10-02', tracking: 'ES-99281' },\n  1044: { cliente: 'Javier Sanz', estado: 'preparacion', total: 80.0, fecha: '2026-10-03' },\n  1045: { cliente: 'Marina Vidal', estado: 'pendiente_pago', total: 73.5, fecha: '2026-10-04' }\n};\n\nif (pedidos[id]) {\n  return JSON.stringify(pedidos[id]);\n} else {\n  return JSON.stringify({ error: 'Pedido no encontrado en la base de datos' });\n}"
+      },
+      "id": "e06-tool",
+      "name": "Tool Consultar Pedido",
+      "type": "@n8n/n8n-nodes-langchain.toolCustom",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "res-1",
+              "name": "respuesta_final",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "res-2",
+              "name": "auditoria_agente",
+              "value": "={ \"ejecutado_en\": $now.toISO(), \"tipo_respuesta\": \"autonoma_con_herramienta\" }",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e06-resultado",
+      "name": "Registro de Respuesta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Disparador Manual": {
+      "main": [
+        [
+          {
+            "node": "Consulta de Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta de Entrada": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool Consultar Pedido": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Registro de Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
