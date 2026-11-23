@@ -1,0 +1,29 @@
+{
+  "name": "E09 Landing en local",
+  "nodes": [
+    {
+      "id": "c1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "landing-local-cei",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "landing-local-cei",
+        "responseMode": "onReceived",
+        "options": {
+          "allowedOrigins": "http://localhost:8000"
+        }
+      }
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}

@@ -23,6 +23,9 @@ En la carpeta [`DATASETS/`](file:///Volumes/Extreme%20SSD/CEI/CEI_IA/IA_NO_CODE/
 | **E04** | [Webhooks y llamadas HTTP](E04_Webhooks_y_Llamadas_HTTP/README.md) | `Webhook`, `HTTP Request`, `Respond to Webhook` | Recibir datos desde formularios web y consultar APIs externas con cabeceras de auth. |
 | **E05** | [Extracción y clasificación con LLM](E05_Extraccion_Estructurada_con_LLM/README.md) | `Basic LLM Chain`, `Structured Output Parser`, `Code (Validation)` | Clasificar tickets de soporte en JSON estricto y validar la respuesta con código. |
 | **E06** | [Agente IA con herramientas y Human-in-the-Loop](E06_Agente_IA_Herramientas_y_HumanInTheLoop/README.md) | `AI Agent`, `Custom Tool / MCP`, `Manual Approval` | Crear un agente que consulta pedidos y exige aprobación antes de reembolsos. |
+| **E07** | [Landing → Webhook → Sheets → Gmail](E07_Landing_Webhook_Sheets_Gmail/README.md) | `Webhook`, `Google Sheets`, `Gmail` | Recibir un formulario web, guardarlo en una hoja y avisar por correo. |
+| **E08** | [Agente de presupuestos](E08_Agente_Presupuestos/README.md) | `AI Agent`, `Calculator`, `Simple Memory` | Un agente de chat que calcula presupuestos ficticios y recuerda la conversación. |
+| **E09** | [Landing en local](E09_Landing_Local/README.md) | `Webhook` (local) | Enviar el formulario a tu n8n en local y comprobar que el dato llega. |
 
 ---
 

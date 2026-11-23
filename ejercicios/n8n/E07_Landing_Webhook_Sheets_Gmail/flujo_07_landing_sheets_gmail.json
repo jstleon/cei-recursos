@@ -1,0 +1,124 @@
+{
+  "name": "E07 Landing → Sheets → Gmail",
+  "nodes": [
+    {
+      "id": "b1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "landing-cei-practica",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "landing-cei-practica",
+        "responseMode": "onReceived",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      }
+    },
+    {
+      "id": "b2",
+      "name": "Guardar en Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "PEGA_AQUI_LA_URL_DE_TU_HOJA_DE_PRUEBAS"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Hoja 1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $now.toFormat('yyyy-MM-dd HH:mm') }}",
+            "Nombre": "={{ $json.body.nombre }}",
+            "Email": "={{ $json.body.email }}",
+            "Mensaje": "={{ $json.body.mensaje }}"
+          },
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "type": "string"
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "type": "string"
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "type": "string"
+            },
+            {
+              "id": "Mensaje",
+              "displayName": "Mensaje",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "b3",
+      "name": "Avisarme por Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "sendTo": "TU_CORREO_DE_PRUEBAS@ejemplo.com",
+        "subject": "=Nuevo contacto en la landing: {{ $('Webhook').item.json.body.nombre }}",
+        "emailType": "text",
+        "message": "=Nombre: {{ $('Webhook').item.json.body.nombre }}\nEmail: {{ $('Webhook').item.json.body.email }}\nMensaje: {{ $('Webhook').item.json.body.mensaje }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Guardar en Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar en Sheets": {
+      "main": [
+        [
+          {
+            "node": "Avisarme por Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}

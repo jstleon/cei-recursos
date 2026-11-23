@@ -1,0 +1,123 @@
+{
+  "name": "E08 Agente de presupuestos",
+  "nodes": [
+    {
+      "id": "a1",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "options": {}
+      }
+    },
+    {
+      "id": "a2",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "options": {
+          "systemMessage": "Eres el asistente de presupuestos del estudio ficticio Nube.\nPrecios por unidad: identidad visual 800 euros; página de una sección 600 euros; asesoría 150 euros.\nPregunta por el número de unidades si falta. Para calcular importes utiliza la herramienta Calculator.\nMuestra cantidades, precio unitario y subtotal de cada servicio, y el total de la suma.\nIndica que es una estimación sin impuestos ni descuentos. No inventes servicios, precios ni condiciones.\nSi te piden contratar, devolver dinero o modificar datos, explica que una persona debe gestionarlo."
+        }
+      }
+    },
+    {
+      "id": "a3",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        120,
+        220
+      ],
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a4",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        280,
+        220
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "a5",
+      "name": "Calculator",
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        440,
+        220
+      ],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}

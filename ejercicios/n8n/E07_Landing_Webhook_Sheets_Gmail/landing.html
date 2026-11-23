@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Landing de práctica · CEI</title>
+<style>body{font-family:system-ui,sans-serif;max-width:520px;margin:40px auto;padding:0 16px;color:#222}
+label{display:block;margin-top:14px;font-weight:600}input,textarea{width:100%;padding:9px;margin-top:4px;border:1px solid #bbb;border-radius:6px;font:inherit}
+button{margin-top:18px;padding:10px 18px;border:0;border-radius:6px;background:#222;color:#fff;font:inherit;cursor:pointer}#estado{margin-top:14px}</style></head>
+<body><h1>Estudio Nube</h1><p>Déjanos tus datos y te contestamos. <small>(Práctica: usa solo datos ficticios.)</small></p>
+<form id="f"><label>Nombre<input name="nombre" required></label><label>Email<input name="email" type="email" required></label>
+<label>Mensaje<textarea name="mensaje" rows="4"></textarea></label><button>Enviar</button></form><p id="estado"></p>
+<script>
+// Pega aquí la Test URL que te da el nodo Webhook de n8n
+const URL_DE_PRUEBA = "PEGA_AQUI_TU_TEST_URL";
+document.getElementById("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const datos = Object.fromEntries(new FormData(e.target));
+  const estado = document.getElementById("estado");
+  try {
+    const r = await fetch(URL_DE_PRUEBA, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(datos)});
+    estado.textContent = r.ok ? "Enviado. Comprueba la ejecución en n8n." : "n8n respondió con error " + r.status;
+  } catch (err) { estado.textContent = "No se pudo enviar: revisa la URL, la escucha del Webhook o CORS (consola del navegador)."; }
+});
+</script></body></html>
