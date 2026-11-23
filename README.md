@@ -70,6 +70,10 @@ Descarga el ZIP de la skill en **Releases**, descomprímelo y copia la carpeta e
 
 En Windows, `~` es tu carpeta de usuario (`C:\Users\<tu usuario>`). Reinicia la herramienta después de instalar.
 
+## Skills de terceros: animación, motion y 3D
+
+Treinta y tres skills públicas de otros autores para animar, hacer motion graphics y trabajar en Blender con tu asistente: `reanimate`, `motion-design` (LottieFiles), `motionmaxxing`, `huashu-art-motion`, `anidoodle` y las 28 de `blender-skills`. Cada una conserva su licencia y su autor. Están en [`skills-terceros/`](skills-terceros/README.md), con su propio instalador (`bash skills-terceros/instalar.sh`). En pruebas.
+
 ## Ejercicios
 
 ### n8n
