@@ -26,6 +26,7 @@ En la carpeta [`DATASETS/`](file:///Volumes/Extreme%20SSD/CEI/CEI_IA/IA_NO_CODE/
 | **E07** | [Landing → Webhook → Sheets → Gmail](E07_Landing_Webhook_Sheets_Gmail/README.md) | `Webhook`, `Google Sheets`, `Gmail` | Recibir un formulario web, guardarlo en una hoja y avisar por correo. |
 | **E08** | [Agente de presupuestos](E08_Agente_Presupuestos/README.md) | `AI Agent`, `Calculator`, `Simple Memory` | Un agente de chat que calcula presupuestos ficticios y recuerda la conversación. |
 | **E09** | [Landing en local](E09_Landing_Local/README.md) | `Webhook` (local) | Enviar el formulario a tu n8n en local y comprobar que el dato llega. |
+| **E10** | [Datos y lógica: Y, O, Switch y Filter](E10_Datos_y_Logica/README.md) | `If` (AND / OR), `Switch`, `Filter` | Predecir y comprobar qué pedidos salen por cada rama, con tres trampas de tipo y mayúsculas. |
 
 ---
 

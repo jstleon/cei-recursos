@@ -1,22 +1,139 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Landing de práctica · CEI</title>
-<style>body{font-family:system-ui,sans-serif;max-width:520px;margin:40px auto;padding:0 16px;color:#222}
-label{display:block;margin-top:14px;font-weight:600}input,textarea{width:100%;padding:9px;margin-top:4px;border:1px solid #bbb;border-radius:6px;font:inherit}
-button{margin-top:18px;padding:10px 18px;border:0;border-radius:6px;background:#222;color:#fff;font:inherit;cursor:pointer}#estado{margin-top:14px}</style></head>
-<body><h1>Estudio Nube</h1><p>Déjanos tus datos y te contestamos. <small>(Práctica: usa solo datos ficticios.)</small></p>
-<form id="f"><label>Nombre<input name="nombre" required></label><label>Email<input name="email" type="email" required></label>
-<label>Mensaje<textarea name="mensaje" rows="4"></textarea></label><button>Enviar</button></form><p id="estado"></p>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Estudio Nube · Contacto (práctica CEI)</title>
+<style>
+  :root{--verde:#064F44;--verde-claro:#E6F0EC;--texto:#1d2a26;--gris:#5d6b66;--error:#b3261e;--ok:#1e6b3a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--texto);background:#f7f9f8;line-height:1.5}
+  .aviso{background:var(--verde);color:#fff;text-align:center;font-size:.82rem;padding:.45rem 1rem}
+  header,main,footer{max-width:960px;margin:0 auto;padding:0 20px}
+  header{padding-top:48px}
+  .marca{font-weight:700;letter-spacing:.02em;color:var(--verde)}
+  h1{font-size:clamp(1.8rem,4.5vw,2.6rem);line-height:1.15;margin:.4em 0 .3em}
+  .lead{font-size:1.1rem;color:var(--gris);max-width:36em}
+  .servicios{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:32px 0}
+  .servicio{background:#fff;border:1px solid #dfe7e3;border-radius:10px;padding:16px}
+  .servicio b{display:block;margin-bottom:4px}
+  .servicio span{color:var(--gris);font-size:.92rem}
+  form{background:#fff;border:1px solid #dfe7e3;border-radius:12px;padding:24px;margin:0 0 48px;max-width:560px}
+  h2{margin-top:0}
+  label{display:block;font-weight:600;margin-top:16px}
+  input[type=text],input[type=email],textarea,select{width:100%;margin-top:6px;padding:10px 12px;border:1px solid #b9c7c1;border-radius:8px;font:inherit;background:#fff}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--verde);outline-offset:1px}
+  .check{display:flex;gap:10px;align-items:flex-start;font-weight:400;margin-top:18px}
+  .check input{margin-top:4px}
+  .err{color:var(--error);font-size:.85rem;font-weight:400;min-height:1.1em;display:block}
+  button{margin-top:20px;background:var(--verde);color:#fff;border:0;border-radius:8px;padding:12px 22px;font:inherit;font-weight:600;cursor:pointer}
+  button[disabled]{opacity:.6;cursor:progress}
+  #estado{margin-top:16px;padding:12px;border-radius:8px;display:none}
+  #estado.enviando{display:block;background:var(--verde-claro)}
+  #estado.ok{display:block;background:#e5f4ea;color:var(--ok)}
+  #estado.error{display:block;background:#fbeaea;color:var(--error)}
+  footer{color:var(--gris);font-size:.85rem;padding-bottom:32px}
+</style>
+</head>
+<body>
+<div class="aviso">Página de práctica · CEI · IA NO CODE · usa solo datos inventados</div>
+<header>
+  <div class="marca">ESTUDIO NUBE</div>
+  <h1>Identidad visual y webs de una página para proyectos que empiezan</h1>
+  <p class="lead">Cuéntanos tu idea y te respondemos con una propuesta orientativa.</p>
+</header>
+<main>
+  <section class="servicios" aria-label="Servicios">
+    <div class="servicio"><b>Identidad visual</b><span>Logotipo, colores y tipografía</span></div>
+    <div class="servicio"><b>Página de una sección</b><span>Web sencilla y adaptable al móvil</span></div>
+    <div class="servicio"><b>Asesoría</b><span>Una sesión para ordenar tu proyecto</span></div>
+  </section>
+
+  <form id="formulario" novalidate>
+    <h2>Contacto</h2>
+    <label for="nombre">Nombre</label>
+    <input type="text" id="nombre" name="nombre" autocomplete="off" required>
+    <span class="err" id="err-nombre"></span>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" autocomplete="off" required>
+    <span class="err" id="err-email"></span>
+
+    <label for="proyecto">Proyecto</label>
+    <select id="proyecto" name="proyecto" required>
+      <option value="">Elige una opción</option>
+      <option>Identidad visual</option>
+      <option>Página de una sección</option>
+      <option>Asesoría</option>
+    </select>
+    <span class="err" id="err-proyecto"></span>
+
+    <label for="mensaje">Mensaje</label>
+    <textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+    <span class="err" id="err-mensaje"></span>
+
+    <label class="check"><input type="checkbox" id="acepto" required> Confirmo que es una prueba con datos inventados.</label>
+    <span class="err" id="err-acepto"></span>
+
+    <button type="submit" id="enviar">Enviar</button>
+    <div id="estado" role="status" aria-live="polite"></div>
+  </form>
+</main>
+<footer>Estudio Nube es una marca ficticia creada para practicar en clase. Esta página no guarda datos por sí sola.</footer>
+
 <script>
-// Pega aquí la Test URL que te da el nodo Webhook de n8n
+// 1. Pega aquí la Test URL del nodo Webhook de n8n (entre comillas). No la compartas.
 const URL_DE_PRUEBA = "PEGA_AQUI_TU_TEST_URL";
-document.getElementById("f").addEventListener("submit", async (e) => {
+// 2. Identifica de dónde viene el envío; llega a n8n como body.origen
+const ORIGEN = "landing-practica-cei";
+
+const f = document.getElementById("formulario");
+const boton = document.getElementById("enviar");
+const estado = document.getElementById("estado");
+const campos = ["nombre","email","proyecto","mensaje"];
+
+function mostrar(clase, texto){ estado.className = clase; estado.textContent = texto; }
+
+function validar(){
+  let ok = true;
+  const reglas = {
+    nombre: v => v.trim().length >= 2 || "Escribe un nombre (mínimo 2 letras).",
+    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || "Escribe un email válido.",
+    proyecto: v => v !== "" || "Elige un proyecto.",
+    mensaje: v => v.trim().length >= 5 || "Escribe un mensaje (mínimo 5 caracteres)."
+  };
+  for (const c of campos){
+    const r = reglas[c](document.getElementById(c).value);
+    document.getElementById("err-"+c).textContent = r === true ? "" : r;
+    if (r !== true) ok = false;
+  }
+  const acepto = document.getElementById("acepto").checked;
+  document.getElementById("err-acepto").textContent = acepto ? "" : "Marca la casilla para enviar la prueba.";
+  return ok && acepto;
+}
+
+f.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const datos = Object.fromEntries(new FormData(e.target));
-  const estado = document.getElementById("estado");
+  if (boton.disabled) return;                       // evita el doble clic
+  if (!validar()) { mostrar("error","Revisa los campos marcados."); return; }
+  if (URL_DE_PRUEBA.startsWith("PEGA_")) { mostrar("error","Falta pegar la Test URL del Webhook en el código (constante URL_DE_PRUEBA)."); return; }
+
+  const datos = { origen: ORIGEN };
+  for (const c of campos) datos[c] = document.getElementById(c).value.trim();
+
+  boton.disabled = true; boton.textContent = "Enviando…";
+  mostrar("enviando","Enviando a n8n…");
   try {
-    const r = await fetch(URL_DE_PRUEBA, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(datos)});
-    estado.textContent = r.ok ? "Enviado. Comprueba la ejecución en n8n." : "n8n respondió con error " + r.status;
-  } catch (err) { estado.textContent = "No se pudo enviar: revisa la URL, la escucha del Webhook o CORS (consola del navegador)."; }
+    const r = await fetch(URL_DE_PRUEBA, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(datos) });
+    if (r.ok) { mostrar("ok","Enviado. Comprueba en n8n la ejecución, la fila en la hoja y el correo."); f.reset(); }
+    else if (r.status === 404) { mostrar("error","Error 404: usa la Test URL y pulsa «Listen for test event» antes de enviar."); }
+    else { mostrar("error","n8n ha respondido con un error ("+r.status+"). Revisa la ejecución."); }
+  } catch (err) {
+    mostrar("error","No se pudo conectar. Revisa la URL, que el Webhook esté escuchando y la consola del navegador (CORS).");
+  } finally {
+    boton.disabled = false; boton.textContent = "Enviar";
+  }
 });
-</script></body></html>
+</script>
+</body>
+</html>

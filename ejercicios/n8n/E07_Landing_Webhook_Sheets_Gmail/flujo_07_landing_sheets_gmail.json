@@ -14,7 +14,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "landing-cei-practica",
-        "responseMode": "onReceived",
+        "responseMode": "lastNode",
         "options": {
           "allowedOrigins": "*"
         }
@@ -39,35 +39,47 @@
         "sheetName": {
           "__rl": true,
           "mode": "name",
-          "value": "Hoja 1"
+          "value": "leads"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Fecha": "={{ $now.toFormat('yyyy-MM-dd HH:mm') }}",
-            "Nombre": "={{ $json.body.nombre }}",
-            "Email": "={{ $json.body.email }}",
-            "Mensaje": "={{ $json.body.mensaje }}"
+            "fecha": "={{ $now.toFormat('yyyy-MM-dd HH:mm') }}",
+            "nombre": "={{ $json.body.nombre }}",
+            "email": "={{ $json.body.email }}",
+            "mensaje": "={{ $json.body.mensaje }}",
+            "proyecto": "={{ $json.body.proyecto }}",
+            "origen": "={{ $json.body.origen }}"
           },
           "schema": [
             {
-              "id": "Fecha",
-              "displayName": "Fecha",
+              "id": "fecha",
+              "displayName": "fecha",
               "type": "string"
             },
             {
-              "id": "Nombre",
-              "displayName": "Nombre",
+              "id": "nombre",
+              "displayName": "nombre",
               "type": "string"
             },
             {
-              "id": "Email",
-              "displayName": "Email",
+              "id": "email",
+              "displayName": "email",
               "type": "string"
             },
             {
-              "id": "Mensaje",
-              "displayName": "Mensaje",
+              "id": "mensaje",
+              "displayName": "mensaje",
+              "type": "string"
+            },
+            {
+              "id": "proyecto",
+              "displayName": "proyecto",
+              "type": "string"
+            },
+            {
+              "id": "origen",
+              "displayName": "origen",
               "type": "string"
             }
           ]
@@ -88,7 +100,7 @@
         "sendTo": "TU_CORREO_DE_PRUEBAS@ejemplo.com",
         "subject": "=Nuevo contacto en la landing: {{ $('Webhook').item.json.body.nombre }}",
         "emailType": "text",
-        "message": "=Nombre: {{ $('Webhook').item.json.body.nombre }}\nEmail: {{ $('Webhook').item.json.body.email }}\nMensaje: {{ $('Webhook').item.json.body.mensaje }}",
+        "message": "=Nombre: {{ $('Webhook').item.json.body.nombre }}\nEmail: {{ $('Webhook').item.json.body.email }}\nProyecto: {{ $('Webhook').item.json.body.proyecto }}\nMensaje: {{ $('Webhook').item.json.body.mensaje }}\nOrigen: {{ $('Webhook').item.json.body.origen }}",
         "options": {}
       }
     }

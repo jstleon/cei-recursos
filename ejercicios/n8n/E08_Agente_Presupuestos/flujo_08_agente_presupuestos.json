@@ -25,25 +25,21 @@
       ],
       "parameters": {
         "options": {
-          "systemMessage": "Eres el asistente de presupuestos del estudio ficticio Nube.\nPrecios por unidad: identidad visual 800 euros; página de una sección 600 euros; asesoría 150 euros.\nPregunta por el número de unidades si falta. Para calcular importes utiliza la herramienta Calculator.\nMuestra cantidades, precio unitario y subtotal de cada servicio, y el total de la suma.\nIndica que es una estimación sin impuestos ni descuentos. No inventes servicios, precios ni condiciones.\nSi te piden contratar, devolver dinero o modificar datos, explica que una persona debe gestionarlo."
+          "systemMessage": "Eres el asistente de presupuestos del estudio ficticio Nube.\nPrecios por unidad: identidad visual 800 euros; página de una sección 600 euros; asesoría 150 euros.\nPregunta por el número de unidades si falta. Para calcular importes utiliza la herramienta Calculator.\nResponde siempre con este formato, una línea por servicio pedido:\n- Servicio: cantidad × precio unitario = subtotal\nTotal: importe en euros\nNo des solo el total: muestra siempre el desglose.\nIndica que es una estimación sin impuestos ni descuentos. No inventes servicios, precios ni condiciones.\nSi te piden contratar, devolver dinero o modificar datos, explica que una persona debe gestionarlo."
         }
       }
     },
     {
       "id": "a3",
-      "name": "OpenAI Chat Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.2,
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
       "position": [
         120,
         220
       ],
       "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4o-mini"
-        },
+        "modelName": "models/gemini-2.5-flash",
         "options": {}
       }
     },
@@ -82,17 +78,6 @@
         ]
       ]
     },
-    "OpenAI Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Simple Memory": {
       "ai_memory": [
         [
@@ -110,6 +95,17 @@
           {
             "node": "AI Agent",
             "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]

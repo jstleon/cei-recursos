@@ -4,7 +4,7 @@ Un agente de chat que calcula presupuestos del estudio ficticio **Nube** con la 
 
 ## Pasos
 1. Importa `flujo_08_agente_presupuestos.json` (**⋯ → Import from File**).
-2. En **OpenAI Chat Model** elige tu credencial y un modelo disponible (viene `gpt-4o-mini`). Si usas otro proveedor, cambia el nodo de modelo por el tuyo. Las llamadas pueden tener coste.
+2. En **Google Gemini Chat Model** elige tu credencial de Gemini (la clave gratuita de Google AI Studio vale). Viene `gemini-2.5-flash`. Si usas otro proveedor, cambia el nodo de modelo por el tuyo.
 3. Abre el chat del editor y prueba en este orden:
 
 | Escribe | Esperado |
@@ -17,6 +17,10 @@ Un agente de chat que calcula presupuestos del estudio ficticio **Nube** con la 
 4. En cada prueba abre la ejecución y mira si llamó a **Calculator**.
 
 ## Si algo falla
+- **"Too many requests" / error 429:** la clave gratuita de Gemini admite unas 5 peticiones por minuto y cada mensaje del agente gasta al menos dos (pensar y usar Calculator). Espera un minuto y repite.
+- **Solo da el total:** el mensaje de sistema pide el desglose línea a línea; si lo has cambiado, vuelve a pegarlo.
 - **Pide una herramienta:** Calculator tiene que ir al puerto *Tool*.
 - **Olvida el dato anterior:** revisa *Simple Memory* y que sigas en la misma sesión de chat.
 - **Al compartir el JSON:** revisa que no lleve nombres de credenciales ni datos tuyos.
+
+> Probado el 23-11-2026 con Gemini 2.5 Flash: los cuatro casos dan el resultado esperado y el agente llama a Calculator.
